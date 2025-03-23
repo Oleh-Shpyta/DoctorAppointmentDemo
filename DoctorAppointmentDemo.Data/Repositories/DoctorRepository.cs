@@ -12,15 +12,24 @@ namespace MyDoctorAppointment.Data.Repositories
 
         public DoctorRepository()
         {
-            dynamic result = ReadFromAppSettings();
+            var settings = AppSettings.Load();
 
-            Path = result.Database.Doctors.Path;
-            LastId = result.Database.Doctors.LastId;
+            if (settings?.Database?.Doctors == null)
+            {
+                throw new Exception("Помилка: Невірна структура конфігурації.");
+            }
+
+            Path = settings.Database.Doctors.Path;
+            LastId = settings.Database.Doctors.LastId;
         }
 
         public override void ShowInfo(Doctor doctor)
         {
-            Console.WriteLine(); // implement view of all object fields
+            Console.WriteLine("Інформація про лікаря:");
+            Console.WriteLine($"ID: {doctor.Id}");
+            Console.WriteLine($"Ім'я: {doctor.Name}");
+            Console.WriteLine($"Email: {doctor.Email}");
+            Console.WriteLine($"Телефон: {doctor.Phone}");
         }
 
         protected override void SaveLastId()

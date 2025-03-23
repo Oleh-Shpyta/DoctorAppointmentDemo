@@ -5,6 +5,24 @@ using Newtonsoft.Json;
 
 namespace MyDoctorAppointment.Data.Repositories
 {
+    public class AppSettings
+    {
+        public DatabaseSettings Database { get; set; }
+        public static AppSettings Load()
+        {
+            string json = File.ReadAllText("appsettings.json");
+            return JsonConvert.DeserializeObject<AppSettings>(json);
+        }
+    }
+    public class DatabaseSettings
+    {
+        public DoctorSettings Doctors { get; set; }
+    }
+    public class DoctorSettings
+    {
+        public string Path { get; set; }
+        public int LastId { get; set; }
+    }
     public abstract class GenericRepository<TSource> : IGenericRepository<TSource> where TSource : Auditable
     {
         public abstract string Path { get; set; }
@@ -69,6 +87,9 @@ namespace MyDoctorAppointment.Data.Repositories
 
         protected abstract void SaveLastId();
 
-        protected dynamic ReadFromAppSettings() => JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(Constants.AppSettingsPath))!;
+        protected AppSettings ReadFromAppSettings()
+        {
+            return JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(Constants.AppSettingsPath))!;
+        }
     }
 }

@@ -12,50 +12,70 @@ namespace MyDoctorAppointment
         {
             _doctorService = new DoctorService();
         }
-
         public void Menu()
         {
-            //while (true)
-            //{
-            //    // add Enum for menu items and describe menu
-            //}
-
-            Console.WriteLine("Current doctors list: ");
-            var docs = _doctorService.GetAll();
-
-            foreach (var doc in docs)
+            bool running = true;
+            while (running)
             {
-                Console.WriteLine(doc.Name);
-            }
+                Console.WriteLine("Select an option:");
+                Console.WriteLine("1. Show doctors");
+                Console.WriteLine("2. Add doctor");
+                Console.WriteLine("3. Exit");
 
-            Console.WriteLine("Adding doctor: ");
+                if (!Enum.TryParse(Console.ReadLine(), out MenuOption option))
+                {
+                    Console.WriteLine("Invalid option. Try again.");
+                    continue;
+                }
 
-            var newDoctor = new Doctor
-            {
-                Name = "Vasya",
-                Surname = "Petrov",
-                Experience = 20,
-                DoctorType = Domain.Enums.DoctorTypes.Dentist
-            };
+                switch (option)
+                {
+                    case MenuOption.ShowDoctors:
+                        Console.WriteLine("Current doctors list:");
+                        var docs = _doctorService.GetAll();
+                        foreach (var doc in docs)
+                        {
+                            Console.WriteLine(doc.Name);
+                        }
+                        break;
 
-            _doctorService.Create(newDoctor);
+                    case MenuOption.AddDoctor:
+                        Console.WriteLine("Adding doctor:");
+                        var newDoctor = new Doctor
+                        {
+                            Name = "Vasya",
+                            Surname = "Petrov",
+                            Experience = 20,
+                            DoctorType = Domain.Enums.DoctorTypes.Dentist
+                        };
+                        _doctorService.Create(newDoctor);
+                        Console.WriteLine("Doctor added successfully.");
+                        break;
 
-            Console.WriteLine("Current doctors list: ");
-            docs = _doctorService.GetAll();
+                    case MenuOption.Exit:
+                        running = false;
+                        Console.WriteLine("Exiting...");
+                        break;
 
-            foreach (var doc in docs)
-            {
-                Console.WriteLine(doc.Name);
+                    default:
+                        Console.WriteLine("Unknown option. Try again.");
+                        break;
+                }
             }
         }
-    }
-
-    public static class Program
-    {
-        public static void Main()
+        public enum MenuOption
         {
-            var doctorAppointment = new DoctorAppointment();
-            doctorAppointment.Menu();
+            ShowDoctors = 1,
+            AddDoctor = 2,
+            Exit = 3
+        }
+        public static class Program
+        {
+            public static void Main()
+            {
+                var doctorAppointment = new DoctorAppointment();
+                doctorAppointment.Menu();
+            }
         }
     }
 }
