@@ -1,4 +1,5 @@
-﻿using MyDoctorAppointment.Data.Configuration;
+﻿using DoctorAppointmentDemo.Data.Interfaces;
+using MyDoctorAppointment.Data.Configuration;
 using MyDoctorAppointment.Data.Interfaces;
 using MyDoctorAppointment.Domain.Entities;
 
@@ -10,8 +11,9 @@ namespace MyDoctorAppointment.Data.Repositories
 
         public override int LastId { get; set; }
 
-        public DoctorRepository()
+        public DoctorRepository(string appSetings, ISerializationService serializationService): base(appSetings, serializationService)
         {
+            this.serializationService = serializationService;
             var settings = AppSettings.Load();
 
             if (settings?.Database?.Doctors == null)
@@ -36,8 +38,9 @@ namespace MyDoctorAppointment.Data.Repositories
         {
             dynamic result = ReadFromAppSettings();
             result.Database.Doctors.LastId = LastId;
+            serializationService.Serialize(AppSettings, result);
 
-            File.WriteAllText(Constants.AppSettingsPath, result.ToString());
+           // File.WriteAllText(Constants.AppSettingsPath, result.ToString());
         }
     }
 }

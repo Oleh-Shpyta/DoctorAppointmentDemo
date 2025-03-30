@@ -1,4 +1,7 @@
-﻿using MyDoctorAppointment.Domain.Entities;
+﻿using System.Reflection.Metadata;
+using System.Xml.Serialization;
+using DoctorAppointmentDemo.Service.Services;
+using MyDoctorAppointment.Domain.Entities;
 using MyDoctorAppointment.Service.Interfaces;
 using MyDoctorAppointment.Service.Services;
 
@@ -73,8 +76,29 @@ namespace MyDoctorAppointment
         {
             public static void Main()
             {
-                var doctorAppointment = new DoctorAppointment();
-                doctorAppointment.Menu();
+                Console.WriteLine("Select data format");
+                Console.WriteLine("1. XML");
+                Console.WriteLine("2. JSON");
+                string? choice = Console.ReadLine();
+                DoctorAppointment? doctorAppointment = null;
+                while (true)
+                {
+                    if (choice.Equals("1"))
+                    {
+                        doctorAppointment = new DoctorAppointment(Constants.XmlAppSettingsPath, new XmlDataSerializerService());
+                        break;
+                    }
+                    else if (choice.Equals("2"))
+                    {
+                        doctorAppointment = new DoctorAppointment(Constant.JsonAppSettingsPath, new JsonDataSerializerService());
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong choice.");
+                        choice = Console.ReadLine();
+                    }
+                }
             }
         }
     }
